@@ -1,8 +1,8 @@
-import { useState,useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import {setUser} from '../Redux/userSlice'
+import { setUser } from "../Redux/userSlice";
 
 const Login = () => {
 	const [email, setEmail] = useState("");
@@ -11,15 +11,14 @@ const Login = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
-	const inputRef = useRef('');
-	useEffect( () => {
-			inputRef.current.focus();
-	},[])
+	const inputRef = useRef("");
+	useEffect(() => {
+		inputRef.current.focus();
+	}, []);
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
 
-		
 		try {
 			const response = await fetch("http://localhost:5000/users/login", {
 				method: "POST",
@@ -29,7 +28,6 @@ const Login = () => {
 				body: JSON.stringify({ email, password }),
 			});
 			const data = await response.json();
-			console.log(data);
 			if (!response.ok) {
 				toast.error(data.message, { theme: "colored" });
 				return;
@@ -37,44 +35,51 @@ const Login = () => {
 
 			// Store token in localStorage
 			localStorage.setItem("token", data.token);
-			dispatch(setUser({ name: data.name, role: data.role, token: data.token }));
+			dispatch(
+				setUser({ name: data.name, role: data.role, token: data.token })
+			);
 
 			if (data.role === "Student") {
 				setIsLoading(true);
-			    toast.success(`${data.message} ! , Welcome ${data.name}`  , {theme: "colored" });
+				toast.success(`${data.message} ! , Welcome ${data.name}`, {
+					theme: "colored",
+				});
 
-			    navigate("/student-dashboard");
-		    }else{
+				navigate("/student-dashboard");
+			} else {
 				setIsLoading(true);
-			    toast.success(`Instructor Login Successfully !, Welcome ${data.name}`, {theme: "colored"});
-			    navigate("/instructor-dashboard");
-		    } 
-	    }catch (err) {
+				toast.success(`Instructor Login Successfully !, Welcome ${data.name}`, {
+					theme: "colored",
+				});
+				navigate("/instructor-dashboard");
+			}
+		} catch (err) {
 			setError(err.message);
 			toast.error(err.message, { theme: "colored" });
-			setEmail('');
-			setPassword('');
+			setEmail("");
+			setPassword("");
 			setIsLoading(false);
 			inputRef.current.focus();
-	}
-
+		}
 	};
 	return (
-		<div className="justify-content-center ">
+		<div className="min-vh-100 d-flex flex-column">
 			{/* Navbar */}
-			<header className="navnavbar navbar-expand-lg bg-primary px-3">
-				<nav className="navbar justify-content-center">
+			<header className="navbar navbar-expand-lg bg-primary px-3">
+				<nav className="container-fluid justify-content-center">
 					<Link
 						to="/"
-						className=" fw-bold fs-1 m-2 p-2 text-white text-decoration-none"
+						className="fw-bold fs-1 m-2 p-2 text-white text-decoration-none"
 					>
 						EduSync
 					</Link>
 				</nav>
 			</header>
-			{/* Login Form */}
-			<div className="align-items-center d-flex flex-column mb-5">
-				<div className="card p-4 shadow col-12 col-md-6 col-lg-4 mt-5  ">
+			<div className="container flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+				<div
+					className="card p-4 shadow w-100"
+					style={{ maxWidth: "400px", marginTop: "3rem" }}
+				>
 					<form onSubmit={handleLogin}>
 						<h2 className="text-center mb-4">Login</h2>
 						<div className="mb-3">
@@ -83,7 +88,7 @@ const Login = () => {
 							</label>
 							<input
 								type="email"
-								className={`form-control`}
+								className="form-control"
 								id="email"
 								name="email"
 								ref={inputRef}
@@ -100,7 +105,7 @@ const Login = () => {
 							</label>
 							<input
 								type="password"
-								className={`form-control`}
+								className="form-control"
 								id="password"
 								name="password"
 								value={password}
@@ -110,7 +115,6 @@ const Login = () => {
 								disabled={isLoading}
 							/>
 						</div>
-
 						<button
 							type="submit"
 							className="btn btn-primary w-100"
@@ -145,9 +149,9 @@ const Login = () => {
 					</div>
 				</div>
 			</div>
-			<footer className="text-center p-3 ">
+			<footer className="text-center mt-auto p-3">
 				<hr />
-				<p className="m-5">&copy; {new Date().getFullYear()} EduSync LMS</p>
+				<p className="m-0">&copy; {new Date().getFullYear()} EduSync LMS</p>
 			</footer>
 		</div>
 	);

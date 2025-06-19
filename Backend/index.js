@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const userRoute = require('./Routes/userRoutes');
 const cors = require("cors");
 const quizRoute = require('./Routes/quizRoutes');
+const AiRoutes = require('./Routes/aiRoutes');
 
 const app= express();
 const port = 5000;
@@ -23,6 +24,7 @@ mongoose
 
 app.use("/users", userRoute);
 app.use("/quiz", quizRoute);
+app.use('/api/ai', AiRoutes);
 
 app.listen(port, ()=>
     console.log(`server running on port ${port}`)

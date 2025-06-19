@@ -14,7 +14,7 @@ const Quiz = () => {
 	}
   
 	return (
-		<div className="justify-content-center ">
+		<div className="min-vh-100 d-flex flex-column">
 			{/* Navbar */}
 			<header className="navnavbar navbar-expand-lg bg-primary px-3">
 				<nav className="navbar justify-content-center">
@@ -63,8 +63,9 @@ const Quiz = () => {
 				</div>
 			</main>
 			<hr />
-			<footer className="text-center mt-5">
-				<p>&copy; {new Date().getFullYear()} EduSync. All rights reserved.</p>
+<footer className="text-center mt-auto p-3">
+				<hr />
+				<p className="m-0">&copy; {new Date().getFullYear()} EduSync LMS</p>
 			</footer>
 			
 		</div>

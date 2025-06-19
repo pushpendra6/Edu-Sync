@@ -90,7 +90,7 @@ const QuizWindow = () => {
   };
 
 	return (
-		<div>
+		<div className="min-vh-100 d-flex flex-column">
 			<header className="navnavbar navbar-expand-lg bg-dark px-3">
 				<nav className="navbar justify-content-center">
 					<h2 className=" fw-bold fs-1 m-2 p-2  text-white">

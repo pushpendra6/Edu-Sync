@@ -28,7 +28,7 @@ const InstructorDashboard = () => {
     navigate('/add-courses')
   }
   return (
-		<div>
+		<div className="min-vh-100 d-flex flex-column">
 			{/* Navbar */}
 			<div className="nav-container text-bg-dark p-3">
 				<nav className="navbar">
@@ -55,7 +55,7 @@ const InstructorDashboard = () => {
           <button className='btn btn-secondary btn-lg m-4' onClick={courseUploadBtn}>Add Courses</button>
 				</div>
 			</main>
-			<footer className="text-center mt-5 mb-3">
+			<footer className="text-center mt-auto mb-3">
 				<hr />
 				<p>&copy; {new Date().getFullYear()} EduSync LMS</p>
 				<p>About Us | Blog | Contact Us </p>

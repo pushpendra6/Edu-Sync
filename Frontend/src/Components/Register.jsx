@@ -51,7 +51,7 @@ const Register = () => {
 			dispatch(setUser({ name: formData.name, role: formData.role }));
 
 			toast.success("Registration successful!", { theme: "colored" });
-			if ((formData.role).toLowerCase === "student") {
+			if (formData.role === "Student") {
 			    toast.success(data.message, {theme: "colored" });
 			    navigate("/student-dashboard");
 		    }else{
@@ -66,140 +66,141 @@ const Register = () => {
 		}
 	}
 		return (
-			<div className="justify-content-center">
+			<div className="min-vh-100 d-flex flex-column">
 				{/* Navbar */}
-				<header className="navnavbar navbar-expand-lg bg-primary px-3">
-					<nav className="navbar justify-content-center">
-						<Link
-							to="/"
-							className=" fw-bold fs-1 m-2 p-2 text-white text-decoration-none"
-						>
-							EduSync
-						</Link>
-					</nav>
-				</header>
-				{/* Login Form */}
-				<div className="align-items-center d-flex flex-column mb-5">
-					<div className="card p-4 shadow col-12 col-md-6 col-lg-4 mt-5  ">
-						<form onSubmit={handleRegister}>
-							<div className="mb-3">
-								<label htmlFor="name" className="form-label">
-									Full Name
-								</label>
-								<input
-									type="text"
-									className={`form-control`}
-									id="name"
-									name="name"
-									ref={inputRef}
-									value={formData.name}
-									onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-									placeholder="Enter your full name"
-									required
-									disabled={isLoading}
-								/>
-							</div>
-							<div className="mb-3">
-								<label htmlFor="email" className="form-label">
-									Email address
-								</label>
-								<input
-									type="email"
-									className={`form-control`}
-									id="email"
-									name="email"
-									value={formData.email}
-									onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-									placeholder="Enter your email"
-									required
-									disabled={isLoading}
-								/>
-							</div>
-							<div className="mb-3">
-								<label htmlFor="password" className="form-label">
-									Password
-								</label>
-								<input
-									type="password"
-									className={`form-control`}
-									id="password"
-									name="password"
-									value={formData.password}
-									onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-									placeholder="Enter your password"
-									required
-									disabled={isLoading}
-								/>
-							</div>
-							<div className="mb-3">
-								<label htmlFor="confirmPassword" className="form-label">
-									Confirm Password
-								</label>
-								<input
-									type="password"
-									className={`form-control`}
-									id="confirmPassword"
-									name="confirmPassword"
-									value={formData.confirmPassword}
-									onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-									placeholder="Confirm your password"
-									required
-									disabled={isLoading}
-								/>
-							</div>
-							<div className="mb-3">
-								<label htmlFor="role" className="form-label">
-									Role
-								</label>
-								<select
-									className="form-select"
-									id="role"
-									name="role"
-									value={formData.role}
-									onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-									required
-									disabled={isLoading}
-								>
-									<option value="">Choose</option>
-									<option value="Student">Student</option>
-									<option value="Instructor">Instructor</option>
-								</select>
-							</div>
-							<button
-								type="submit"
-								className="btn btn-primary w-100"
-								disabled={isLoading}
-							>
-								{isLoading ? (
-									<>
-										<span
-											className="spinner-border spinner-border-sm me-2"
-											role="status"
-											aria-hidden="true"
-										></span>
-										Registering...
-									</>
-								) : (
-									"Register"
-								)}
-							</button>
-						</form>
-						<div className="text-center mt-3">
-							<p className="mb-0">
-								Already have an account?{" "}
-								<Link to="/login" className="text-decoration-none">
-									Login here
-								</Link>
-							</p>
-						</div>
-					</div>
-				</div>
-				<footer className="text-center p-3 ">
-						<hr />
-						<p className="m-5">
-							&copy; {new Date().getFullYear()} EduSync LMS
-						</p>
-				</footer>
+				<header className="navbar navbar-expand-lg bg-primary px-3">
+            <nav className="container-fluid justify-content-center">
+                <Link
+                    to="/"
+                    className="fw-bold fs-1 m-2 p-2 text-white text-decoration-none"
+                >
+                    EduSync
+                </Link>
+            </nav>
+        </header>
+        {/* Register Form */}
+        <div className="container flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+            <div className="card p-4 shadow w-100" style={{ maxWidth: "450px", marginTop: "3rem" }}>
+                <form onSubmit={handleRegister}>
+                    <div className="mb-3">
+                        <label htmlFor="name" className="form-label">
+                            Full Name
+                        </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="name"
+                            name="name"
+                            ref={inputRef}
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Enter your full name"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label">
+                            Email address
+                        </label>
+						<input
+                            type="email"
+                            className="form-control"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="Enter your email"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            placeholder="Enter your password"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="confirmPassword" className="form-label">
+                            Confirm Password
+                        </label>
+						<input
+                            type="password"
+                            className="form-control"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                            placeholder="Confirm your password"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="role" className="form-label">
+                            Role
+                        </label>
+                        <select
+                            className="form-select"
+                            id="role"
+                            name="role"
+                            value={formData.role}
+                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                            required
+                            disabled={isLoading}
+                        >
+                            <option value="">Choose</option>
+                            <option value="Student">Student</option>
+                            <option value="Instructor">Instructor</option>
+                        </select>
+                    </div>
+                    <button
+                        type="submit"
+                        className="btn btn-primary w-100"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <>
+                                <span
+								                                   className="spinner-border spinner-border-sm me-2"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                                Registering...
+                            </>
+                        ) : (
+                            "Register"
+                        )}
+                    </button>
+                </form>
+                <div className="text-center mt-3">
+                    <p className="mb-0">
+                        Already have an account?{" "}
+                        <Link to="/login" className="text-decoration-none">
+                            Login here
+                        </Link>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <footer className="text-center mt-auto p-3">
+            <hr />
+            <p className="m-0">
+                &copy; {new Date().getFullYear()} EduSync LMS
+            </p>
+        </footer>
+				
 			</div>
 		);
 	};
