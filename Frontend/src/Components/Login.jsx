@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch} from "react-redux";
 import { setUser } from "../Redux/userSlice";
 
 const Login = () => {
@@ -12,6 +12,7 @@ const Login = () => {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
 	const inputRef = useRef("");
+
 	useEffect(() => {
 		inputRef.current.focus();
 	}, []);
@@ -30,37 +31,31 @@ const Login = () => {
 			const data = await response.json();
 			if (!response.ok) {
 				toast.error(data.message, { theme: "colored" });
+				setIsLoading(false);
 				return;
 			}
 
-			// Store token in localStorage
+			const userData = { name: data.name, role: data.role, token: data.token };
+			dispatch(setUser(userData));
+			localStorage.setItem("user", JSON.stringify(userData));
 			localStorage.setItem("token", data.token);
-			dispatch(
-				setUser({ name: data.name, role: data.role, token: data.token })
-			);
 
-			if (data.role === "Student") {
-				setIsLoading(true);
-				toast.success(`${data.message} ! , Welcome ${data.name}`, {
-					theme: "colored",
-				});
+			toast.success(`Welcome ${data.name}!`, { theme: "colored" });
 
-				navigate("/student-dashboard");
-			} else {
-				setIsLoading(true);
-				toast.success(`Instructor Login Successfully !, Welcome ${data.name}`, {
-					theme: "colored",
-				});
-				navigate("/instructor-dashboard");
-			}
+			const redirectPath =
+				data.role === "Student"
+					? "/student-dashboard"
+					: "/instructor-dashboard";
+
+			navigate(redirectPath, { replace: true }); // ✅ prevents back to login
 		} catch (err) {
 			setError(err.message);
 			toast.error(err.message, { theme: "colored" });
 			setEmail("");
 			setPassword("");
-			setIsLoading(false);
 			inputRef.current.focus();
 		}
+		setIsLoading(false);
 	};
 	return (
 		<div className="min-vh-100 d-flex flex-column">

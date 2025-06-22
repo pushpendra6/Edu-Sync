@@ -54,10 +54,10 @@ const CourseUpload = () => {
 	return (
 		<div className="min-vh-100 d-flex flex-column">
 			{/* Navbar */}
-			<header className="navnavbar navbar-expand-lg bg-primary px-3">
+			<header className="navnavbar navbar-expand-lg bg-dark px-3">
 				<nav className="navbar justify-content-center">
 					<Link
-						to="/"
+						to="/instructor-dashboard"
 						className=" fw-bold fs-1 m-2 p-2 text-white text-decoration-none"
 					>
 						EduSync

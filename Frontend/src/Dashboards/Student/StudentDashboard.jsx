@@ -2,24 +2,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { clearUser } from "../../Redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-
-const courses = [
-	{ id: 1, name: "Frontend Development", image: "frontend.jpg", price: 199 },
-	{ id: 2, name: "Backend Development", image: "backend.jpg", price: 249 },
-	{
-		id: 3,
-		name: "Full-Stack Web Development",
-		image: "fullstack.jpg",
-		price: 399,
-	},
-	{ id: 4, name: "Block-Chain", image: "blockchain.jpeg", price: 179 },
-	{ id: 5, name: "Data Structures in C++", image: "dsa.jpg", price: 159 },
-	{ id: 6, name: "Python Programming", image: "Python.jpg", price: 189 },
-	{ id: 7, name: "DevOps with Azure", image: "devops.jpg", price: 249 },
-	{ id: 8, name: "Machine Learning Fundamentals", image: "ml.png", price: 299 },
-];
+import { useEffect } from "react";
 
 const StudentDashboard = () => {
+	const [courses, setCourses] = useState([]);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [showProfile, setShowProfile] = useState(false);
@@ -33,6 +19,19 @@ const StudentDashboard = () => {
 		localStorage.removeItem("token");
 		navigate("/");
 	};
+	const fetchCourses = async () => {
+		try {
+			const res = await fetch("http://localhost:5000/course/getall-courses"); // Replace with your API URL
+			if (!res.ok) throw new Error("Failed to fetch books");
+			const data = await res.json();
+			setCourses(data);
+		} catch (err) {
+			window.alert(err.message);
+		}
+	};
+	useEffect(() => {
+		fetchCourses();
+	}, []);
 
 	const handleSummarize = async (courseName) => {
 		setSummaryCourse(courseName);
@@ -52,12 +51,11 @@ const StudentDashboard = () => {
 			);
 
 			const data = await response.json();
-			if(data.summary){
+			if (data.summary) {
 				setSummary(data.summary);
-			}else{
-				setSummary("No summary returned")
+			} else {
+				setSummary("No summary returned");
 			}
-			
 		} catch (err) {
 			setSummary("Failed to generate summary.");
 			console.error(err);
@@ -152,12 +150,12 @@ const StudentDashboard = () => {
 				<div className="row g-4">
 					{courses.map((course) => (
 						<div
-							key={course.id}
+							key={course._id}
 							className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex"
 						>
 							<div className="card flex-fill h-100 shadow-sm border-0">
 								<img
-									src={`/${course.image}`}
+									src={course.courseImage}
 									alt={course.name}
 									className="card-img-top"
 									style={{
@@ -169,9 +167,11 @@ const StudentDashboard = () => {
 								/>
 								<div className="card-body d-flex flex-column ">
 									<h5 className="card-title">{course.name}</h5>
-									<p className="card-text mb-2 fw-semibold text-danger">
-										${course.price}
-									</p>
+									<p className="card-text mb-2 fw-semibold">${course.price}</p>
+									<p className="card-text mb-2 ">Description - {course.description}</p>
+									<p className="card-text mb-2 ">Course Level - {course.level}</p>
+									<p className="card-text mb-2 ">Duration - Duration - {Math.floor(course.duration / 60)} hrs &{" "}
+										{course.duration % 60} min</p>
 									<button className="btn btn-dark mt-auto w-100">Enroll</button>
 									<button
 										className="btn btn-primary mt-2 w-100"
@@ -209,7 +209,7 @@ const StudentDashboard = () => {
 								)}
 
 								<button
-									className="btn btn-secondary mt-3"
+									className="btn btn-danger mt-3"
 									onClick={handlePopupCancel}
 								>
 									Close
