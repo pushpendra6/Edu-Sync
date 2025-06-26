@@ -25,4 +25,38 @@ const getCourseSummary = async (courseName) => {
 	}
 };
 
-module.exports = { getCourseSummary };
+
+//Chat bot 
+const isEducationPrompt = (prompt) => {
+	const educationKeywords = [
+		"education", "course", "teacher", "student", "study", "exam", "syllabus",
+		"lms", "lecture", "tutorial", "university", "college", "class", "assignment"
+	];
+
+	return educationKeywords.some((word) =>
+		prompt.toLowerCase().includes(word)
+	);
+};
+
+const chatWithGemini = async (prompt) => {
+	if (!isEducationPrompt(prompt)) {
+		return "❌ Only education-related queries are supported.";
+	}
+
+	try {
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+		const result = await model.generateContent(prompt);
+		const response = result.response;
+		const text = response.text();
+
+		if (!text) {
+			throw new Error("Empty response from Gemini.");
+		}
+		return text;
+	} catch (error) {
+		console.error("Gemini Chat Error:", error.message);
+		throw new Error("Failed to get chatbot response.");
+	}
+};
+
+module.exports = { getCourseSummary, chatWithGemini};

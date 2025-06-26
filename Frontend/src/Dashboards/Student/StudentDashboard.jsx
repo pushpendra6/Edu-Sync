@@ -14,14 +14,47 @@ const StudentDashboard = () => {
 	const [loadingSummary, setLoadingSummary] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [summaryCourse, setSummaryCourse] = useState("");
+	const [showChat, setShowChat] = useState(false);
 	const hanadleLogout = () => {
 		dispatch(clearUser());
 		localStorage.removeItem("token");
 		navigate("/");
 	};
+
+	const [userMessage, setUserMessage] = useState("");
+	const [chatHistory, setChatHistory] = useState([]);
+
+	const sendMessage = async () => {
+		if (!userMessage.trim()) return;
+
+		// Add user message to chat history
+		setChatHistory((prev) => [...prev, { sender: "user", text: userMessage }]);
+
+		try {
+			const res = await fetch("http://localhost:5000/api/ai/chat", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ prompt: userMessage }),
+			});
+			const data = await res.json();
+
+			setChatHistory((prev) => [...prev, { sender: "bot", text: data.reply }]);
+		} catch (err) {
+			// alert(err);
+			setChatHistory((prev) => [
+				...prev,
+				{ sender: "bot", text: "Error occurred" },
+			]);
+		}
+
+		setUserMessage(""); // clear input
+	};
+
 	const fetchCourses = async () => {
 		try {
-			const res = await fetch("http://localhost:5000/course/getall-courses"); // Replace with your API URL
+			const res = await fetch("http://localhost:5000/course/getall-courses");
 			if (!res.ok) throw new Error("Failed to fetch books");
 			const data = await res.json();
 			setCourses(data);
@@ -168,10 +201,16 @@ const StudentDashboard = () => {
 								<div className="card-body d-flex flex-column ">
 									<h5 className="card-title">{course.name}</h5>
 									<p className="card-text mb-2 fw-semibold">${course.price}</p>
-									<p className="card-text mb-2 ">Description - {course.description}</p>
-									<p className="card-text mb-2 ">Course Level - {course.level}</p>
-									<p className="card-text mb-2 ">Duration - Duration - {Math.floor(course.duration / 60)} hrs &{" "}
-										{course.duration % 60} min</p>
+									<p className="card-text mb-2 ">
+										Description - {course.description}
+									</p>
+									<p className="card-text mb-2 ">
+										Course Level - {course.level}
+									</p>
+									<p className="card-text mb-2 ">
+										Duration - Duration - {Math.floor(course.duration / 60)} hrs
+										& {course.duration % 60} min
+									</p>
 									<button className="btn btn-dark mt-auto w-100">Enroll</button>
 									<button
 										className="btn btn-primary mt-2 w-100"
@@ -219,7 +258,7 @@ const StudentDashboard = () => {
 					)}
 				</div>
 			</main>
-			<div></div>
+
 			<footer className="text-center mt-auto p-3">
 				<hr />
 				<p className="m-0">&copy; {new Date().getFullYear()} EduSync LMS</p>
@@ -231,6 +270,78 @@ const StudentDashboard = () => {
 					<span>Contact Us</span>
 				</div>
 			</footer>
+			{/* Floating Chatbot Button */}
+			{!showChat && (
+				<button
+					className="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow d-print-none"
+					onClick={() => setShowChat(true)}
+					title="Open Chat"
+					style={{ width: "66px", height: "56px", zIndex: 1050 }}
+				>
+					💬 <span>Help?</span>
+				</button>
+			)}
+
+			{showChat && (
+				<div
+					className="position-fixed bg-white border shadow d-flex flex-column d-print-none"
+					style={{
+						bottom: "1rem",
+						right: "1rem",
+						width: "350px",
+						height: "500px",
+						zIndex: 1055,
+					}}
+				>
+					{/* Chatbot Header (Fixed) */}
+					<div className="bg-primary text-white d-flex justify-content-between align-items-center px-3 py-2">
+						<strong>EduSync Chatbot</strong>
+						<button
+							className="btn-close btn-close-white"
+							aria-label="Close"
+							onClick={() => setShowChat(false)}
+						></button>
+					</div>
+
+					{/* Chat Area: scrollable */}
+					<div className="flex-grow-1 overflow-auto px-3 py-2">
+						{chatHistory.map((msg, i) => (
+							<p
+								key={i}
+								className={
+									msg.sender === "user"
+										? "text-end text-dark mb-2"
+										: "text-start text-primary mb-2"
+								}
+							>
+								<strong>{msg.sender === "user" ? "You: " : "Bot: "}</strong>
+								{msg.text}
+							</p>
+						))}
+					</div>
+
+					{/* Input Area: sticks to bottom */}
+					<div className="border-top p-2">
+						<div className="input-group">
+							<input
+								type="text"
+								className="form-control"
+								value={userMessage}
+								onChange={(e) => setUserMessage(e.target.value)}
+								placeholder="Type your question about education..."
+								onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+							/>
+							<button
+								className="btn btn-outline-primary"
+								type="button"
+								onClick={sendMessage}
+							>
+								Send
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

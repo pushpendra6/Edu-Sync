@@ -44,12 +44,12 @@ const InstructorDashboard = () => {
 					>
 						Add Courses
 					</Link>
-						<Link
+						<button
 							className="btn btn-danger btn-lg m-2"
-							to='/'
+							onClick={hanadleLogout}
 						>
 							Logout
-						</Link>
+						</button>
 					</div>
 				</nav>
 			</div>

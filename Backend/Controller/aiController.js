@@ -1,4 +1,4 @@
-const { getCourseSummary } = require('../Services/aiService');
+const { getCourseSummary, chatWithGemini } = require('../Services/aiService');
 
 const summarizeCourse = async (req, res) => {
   const { courseName } = req.body;
@@ -16,4 +16,22 @@ const summarizeCourse = async (req, res) => {
   }
 };
 
-module.exports = { summarizeCourse };
+
+const chatWithBot = async (req, res) => {
+	const { prompt } = req.body;
+  const preparedPrompt = `Genrate only 40 words for this ${prompt}`
+
+	if (!prompt || typeof prompt !== "string") {
+		return res.status(400).json({ reply: "Invalid prompt." });
+	}
+
+	try {
+		const reply = await chatWithGemini(preparedPrompt);
+		res.json({ reply });
+	} catch (error) {
+		console.error("Chatbot Error:", error.message);
+		res.status(500).json({ reply: "Something went wrong while processing your query." });
+	}
+};
+
+module.exports = { summarizeCourse, chatWithBot};

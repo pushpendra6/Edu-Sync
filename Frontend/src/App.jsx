@@ -1,10 +1,10 @@
 import { BrowserRouter as Router , Routes, Route,} from 'react-router-dom'
 import './App.css';
-import LandingPage from './Pages/LandingPage';
+import LandingPage from './Components/LandingPage';
 import StudentDashboard from './Dashboards/Student/StudentDashboard';
 import InstructorDashboard from './Dashboards/Instructor/InstructorDashboard';
-import Login from './Pages/Login';
-import Register from './Pages/Register';
+import Login from './Components/Login';
+import Register from './Components/Register';
 import CourseUpload from './Dashboards/Instructor/CourseUpload';
 import QuizMenu from './Dashboards/Student/QuizMenu';
 import QuizWindow from './Dashboards/Student/QuizWindow';
