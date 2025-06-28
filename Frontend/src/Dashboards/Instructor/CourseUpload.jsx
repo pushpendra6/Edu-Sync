@@ -4,8 +4,13 @@ import { toast } from "react-toastify";
 
 const CourseUpload = () => {
 	const [courseData, setCourseData] = useState({
-		title: "",
+		name: "",
+		description: "",
+		instructor: "",
 		price: "",
+		category: "",
+		level: "Beginner",
+		duration: "",
 		image: null,
 	});
 	const inputRef = useRef("");
@@ -27,22 +32,71 @@ const CourseUpload = () => {
 		}
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
-		setTimeout(() => {
+
+		try {
+			const formData = new FormData();
+
+			formData.append("name", courseData.name);
+			formData.append("description", courseData.description);
+			formData.append("instructor", courseData.instructor);
+			formData.append("price", courseData.price);
+			formData.append("category", courseData.category);
+			formData.append("level", courseData.level);
+			formData.append("duration", courseData.duration);
+			formData.append("courseImage", fileInputRef.current.files[0]); // image file
+
+			setIsLoading(true);
+
+			const response = await fetch("/course/add-course", {
+				method: "POST",
+				body: formData,
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				toast.error(data.message || "Submit error", { theme: "colored" });
+			} else {
+				alert(data.message);
+				toast.success("Course uploaded successfully!", { theme: "colored" });
+			    setShowPopup(true);
+			    setPopupType("upload");
+				// setCourseData({
+				// 	name: "",
+				// 	description: "",
+				// 	instructor: "",
+				// 	price: "",
+				// 	category: "",
+				// 	level: "Beginner",
+				// 	duration: "",
+				// 	image: null,
+				// });
+				// fileInputRef.current.value = null;
+			}
+		} catch (error) {
+			console.error("Submit Error:", error);
+			toast.error("Submit error", { theme: "colored" });
+		} finally {
 			setIsLoading(false);
-			toast.success("Course uploaded successfully!", { theme: "colored" });
-			setShowPopup(true);
-			setPopupType("upload");
-		}, 2000);
+		}
+		
 	};
 
 	const handlePopupConfirm = () => {
 		setShowPopup(false);
-		setCourseData({ title: "", price: "" });
+		setCourseData({
+			name: "",
+			description: "",
+			instructor: "",
+			price: "",
+			category: "",
+			level: "Beginner",
+			duration: "",
+			image: null,
+		});
 		fileInputRef.current.value = null; // <-- clear file input
-
 		inputRef.current.focus();
 	};
 
@@ -72,33 +126,70 @@ const CourseUpload = () => {
 				>
 					<form onSubmit={handleSubmit}>
 						<h2 className="text-center mb-4">Enter the New Course Details</h2>
+						{/* Course Name */}
 						<div className="mb-3">
-							<label htmlFor="title" className="form-label">
-								Enter title of Course
+							<label htmlFor="name" className="form-label">
+								Course Name
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								id="title"
-								name="text"
+								id="name"
 								ref={inputRef}
-								value={courseData.title}
+								value={courseData.name}
 								onChange={(e) =>
-									setCourseData({ ...courseData, title: e.target.value })
+									setCourseData({ ...courseData, name: e.target.value })
 								}
-								placeholder="Enter course title"
+								placeholder="Enter course name"
 								required
 							/>
 						</div>
+
+						{/* Description */}
+						<div className="mb-3">
+							<label htmlFor="description" className="form-label">
+								Description
+							</label>
+							<textarea
+								className="form-control"
+								id="description"
+								rows="3"
+								value={courseData.description}
+								onChange={(e) =>
+									setCourseData({ ...courseData, description: e.target.value })
+								}
+								placeholder="Enter course description"
+								required
+							></textarea>
+						</div>
+
+						{/* Instructor */}
+						<div className="mb-3">
+							<label htmlFor="instructor" className="form-label">
+								Instructor Name
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								id="instructor"
+								value={courseData.instructor}
+								onChange={(e) =>
+									setCourseData({ ...courseData, instructor: e.target.value })
+								}
+								placeholder="Enter instructor name"
+								required
+							/>
+						</div>
+
+						{/* Price */}
 						<div className="mb-3">
 							<label htmlFor="price" className="form-label">
 								Price
 							</label>
 							<input
-								type="text"
+								type="number"
 								className="form-control"
 								id="price"
-								name="price"
 								value={courseData.price}
 								onChange={(e) =>
 									setCourseData({ ...courseData, price: e.target.value })
@@ -107,21 +198,79 @@ const CourseUpload = () => {
 								required
 							/>
 						</div>
+
+						{/* Category */}
 						<div className="mb-3">
-							<label htmlFor="img" className="form-label">
-								Image
+							<label htmlFor="category" className="form-label">
+								Category
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								id="category"
+								value={courseData.category}
+								onChange={(e) =>
+									setCourseData({ ...courseData, category: e.target.value })
+								}
+								placeholder="e.g., Web, AI"
+								required
+							/>
+						</div>
+
+						{/* Level */}
+						<div className="mb-3">
+							<label htmlFor="level" className="form-label">
+								Level
+							</label>
+							<select
+								className="form-select"
+								id="level"
+								value={courseData.level}
+								onChange={(e) =>
+									setCourseData({ ...courseData, level: e.target.value })
+								}
+								required
+							>
+								<option value="Beginner">Beginner</option>
+								<option value="Intermediate">Intermediate</option>
+								<option value="Advanced">Advanced</option>
+							</select>
+						</div>
+
+						{/* Duration */}
+						<div className="mb-3">
+							<label htmlFor="duration" className="form-label">
+								Duration (in minutes)
+							</label>
+							<input
+								type="number"
+								className="form-control"
+								id="duration"
+								value={courseData.duration}
+								onChange={(e) =>
+									setCourseData({ ...courseData, duration: e.target.value })
+								}
+								placeholder="Enter course duration in minutes"
+								required
+							/>
+						</div>
+
+						{/* Course Image */}
+						<div className="mb-3">
+							<label htmlFor="courseImage" className="form-label">
+								Course Image
 							</label>
 							<input
 								type="file"
 								className="form-control"
-								id="img"
-								name="img"
-								ref={fileInputRef}
+								id="courseImage"
 								accept="image/*"
+								ref={fileInputRef}
 								onChange={handleImageChange}
 								required
 							/>
 						</div>
+
 						<button type="submit" className="btn btn-primary w-100">
 							{isLoading ? (
 								<>
