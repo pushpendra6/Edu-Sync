@@ -1,4 +1,5 @@
 const Quiz = require('../Model/quizModel');
+const  { authenticateToken } = require('../Middleware/auth')
 
 // Fetch questions by tag (e.g., Python, React)
 const getQuestionsByTag = async (req, res) => {
@@ -9,6 +10,7 @@ const getQuestionsByTag = async (req, res) => {
     }
 
     const questions = await Quiz.find({ tags: tag });
+    console.log("Fetched questions:", questions);
     res.status(200).json(questions);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });

@@ -62,7 +62,7 @@ const Quiz = () => {
 					)}
 				</div>
 			</main>
-			<hr />
+			
 <footer className="text-center mt-auto p-3">
 				<hr />
 				<p className="m-0">&copy; {new Date().getFullYear()} EduSync LMS</p>
